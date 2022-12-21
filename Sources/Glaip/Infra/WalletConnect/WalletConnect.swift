@@ -90,9 +90,9 @@ final class WalletConnect {
     
     private func store(_ session: Session) {
         do {
-            let employeeData = try JSONEncoder().encode(session)
+            let sesionData = try JSONEncoder().encode(session)
             let userDefault = UserDefaults.standard
-            userDefault.set(session, forKey: sessionKey)
+            userDefault.set(sesionData, forKey: sessionKey)
             userDefault.synchronize()
         } catch {
             print("Could not store session")
