@@ -30,7 +30,7 @@ public final class WalletLinkService: WalletService {
     private let description: String
     
     private var walletConnect: WalletConnect!
-    private var onDidConnect: ((WalletDetails) -> Void)?
+    var onDidConnect: ((WalletDetails) -> Void)?
     
     public init(title: String, description: String) {
         self.title = title
