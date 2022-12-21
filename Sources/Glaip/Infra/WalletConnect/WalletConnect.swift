@@ -87,6 +87,17 @@ final class WalletConnect {
             throw TestError.unknown
         }
     }
+    
+    private func store(_ session: Session) {
+        do {
+            let employeeData = try JSONEncoder().encode(session)
+            let userDefault = UserDefaults.standard
+            userDefault.set(session, forKey: sessionKey)
+            userDefault.synchronize()
+        } catch {
+            print("Could not store session")
+        }
+    }
 }
 
 extension WalletConnect: ClientDelegate {
@@ -101,9 +112,7 @@ extension WalletConnect: ClientDelegate {
     
     func client(_ client: Client, didConnect session: Session) {
         self.session = session
-        let userDefault = UserDefaults.standard
-        userDefault.set(session, forKey: sessionKey)
-        userDefault.synchronize()
+        store(session)
         delegate.didConnect()
     }
     
@@ -113,6 +122,7 @@ extension WalletConnect: ClientDelegate {
     }
     
     func client(_ client: Client, didUpdate session: Session) {
+        store(session)
         delegate.didUpdate()
     }
 }
