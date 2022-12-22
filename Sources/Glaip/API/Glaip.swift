@@ -15,16 +15,16 @@ public final class Glaip: ObservableObject {
     public let supportedWallets: [WalletType]
     
     public var currentWallet: WalletType?
-    public var onDidConnect: ((User) -> Void)?
     
     @Published public var userState: UserState = .unregistered
     
-    public init(title: String, description: String, supportedWallets: [WalletType], onConnect: ((User) -> Void)?) {
+    public init(title: String, description: String, supportedWallets: [WalletType], onConnect: ((User) -> Void)?, onDidDisconnect: (() -> Void)?) {
         self.title = title
         self.description = description
         self.supportedWallets = supportedWallets
         self.walletConnect = WalletLinkService(title: title, description: description)
         self.walletConnect.onDidConnect = onConnect
+        self.walletConnect.onDidDisconnect = onDidDisconnect
     }
     
     public func loginUser(type: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
