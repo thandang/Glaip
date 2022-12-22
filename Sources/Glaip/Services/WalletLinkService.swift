@@ -11,7 +11,7 @@ import WalletConnectSwift
 import SwiftUI
 
 public protocol WalletService {
-    func connect(wallet: WalletType, completion: @escaping (Result<WalletDetails, Error>) -> Void)
+    func connect(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void)
     func sign(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void)
 }
 
@@ -26,11 +26,12 @@ public struct WalletDetails {
 }
 
 public final class WalletLinkService: WalletService {
+    
     private let title: String
     private let description: String
     
     private var walletConnect: WalletConnect!
-    var onDidConnect: ((WalletDetails) -> Void)?
+    var onDidConnect: ((User) -> Void)?
     
     public init(title: String, description: String) {
         self.title = title
@@ -39,7 +40,7 @@ public final class WalletLinkService: WalletService {
         setWalletConnect()
     }
     
-    public func connect(wallet: WalletType, completion: @escaping (Result<WalletDetails, Error>) -> Void) {
+    public func connect(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
         openAppToConnect(wallet: wallet, getDeepLink(wallet: wallet), delay: 1)
         
         // Temp fix to avoid threading issue with async await
@@ -106,7 +107,20 @@ extension WalletLinkService: WalletConnectDelegate {
             let walletAddress = walletInfo.accounts.first
         else { return }
         
-        onDidConnect?(WalletDetails(address: walletAddress, chainId: walletInfo.chainId))
+        var type: WalletType = .MetaMask
+        if session.dAppInfo.peerMeta.name.lowercased().contains("metamask") {
+            type = .MetaMask
+        } else if session.dAppInfo.peerMeta.name.lowercased().contains("trust") {
+            type = .TrustWallet
+        }
+        let user = User(
+            wallet: Wallet(
+                type: type,
+                address: walletAddress,
+                chainId: String(walletInfo.chainId))
+        )
+        onDidConnect?(user)
+//        onDidConnect?(WalletDetails(address: walletAddress, chainId: walletInfo.chainId))
     }
     
     func didDisconnect() {

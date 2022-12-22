@@ -15,11 +15,11 @@ public final class Glaip: ObservableObject {
     public let supportedWallets: [WalletType]
     
     public var currentWallet: WalletType?
-    public var onDidConnect: ((WalletDetails) -> Void)?
+    public var onDidConnect: ((User) -> Void)?
     
     @Published public var userState: UserState = .unregistered
     
-    public init(title: String, description: String, supportedWallets: [WalletType], onConnect: ((WalletDetails) -> Void)?) {
+    public init(title: String, description: String, supportedWallets: [WalletType], onConnect: ((User) -> Void)?) {
         self.title = title
         self.description = description
         self.supportedWallets = supportedWallets
@@ -51,15 +51,15 @@ public final class Glaip: ObservableObject {
         service.connect(wallet: wallet, completion: { result in
             
             switch result {
-            case let .success(walletDetails):
-                completion(.success(
-                    User(
-                        wallet: Wallet(
-                            type: wallet,
-                            address: walletDetails.address,
-                            chainId: String(walletDetails.chainId))
-                    ))
-                )
+            case let .success(user):
+                completion(.success(user))
+//                    User(
+//                        wallet: Wallet(
+//                            type: wallet,
+//                            address: walletDetails.address,
+//                            chainId: String(walletDetails.chainId))
+//                    ))
+//                )
             case let .failure(error):
                 completion(.failure(error))
             }
