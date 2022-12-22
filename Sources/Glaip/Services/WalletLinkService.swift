@@ -109,9 +109,9 @@ extension WalletLinkService: WalletConnectDelegate {
         else { return }
         
         var type: WalletType = .MetaMask
-        if session.walletInfo.peerMeta.name.lowercased().contains("metamask") {
+        if let wallet = session.walletInfo, wallet.peerMeta.name.lowercased().contains("metamask") {
             type = .MetaMask
-        } else if session.walletInfo.peerMeta.name.lowercased().contains("trust") {
+        } else if let wallet = session.walletInfo, wallet.peerMeta.name.lowercased().contains("trust") {
             type = .TrustWallet
         }
         let user = User(
