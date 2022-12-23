@@ -11,7 +11,7 @@ import WalletConnectSwift
 protocol WalletConnectDelegate: AnyObject {
     func failedToConnect()
     func didConnect()
-    func didDisconnect()
+    func didDisconnect(session: Session)
     func didUpdate()
 }
 
@@ -118,7 +118,7 @@ extension WalletConnect: ClientDelegate {
     
     func client(_ client: Client, didDisconnect session: Session) {
         UserDefaults.standard.removeObject(forKey: sessionKey)
-        delegate.didDisconnect()
+        delegate.didDisconnect(session: session)
     }
     
     func client(_ client: Client, didUpdate session: Session) {

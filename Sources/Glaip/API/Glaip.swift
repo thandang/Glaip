@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WalletConnectSwift
 
 public final class Glaip: ObservableObject {
     private let walletConnect: WalletLinkService
@@ -18,7 +19,7 @@ public final class Glaip: ObservableObject {
     
     @Published public var userState: UserState = .unregistered
     
-    public init(title: String, description: String, supportedWallets: [WalletType], onConnect: ((User) -> Void)?, onDidDisconnect: (() -> Void)?) {
+    public init(title: String, description: String, supportedWallets: [WalletType], onConnect: ((User) -> Void)?, onDidDisconnect: ((Session) -> Void)?) {
         self.title = title
         self.description = description
         self.supportedWallets = supportedWallets
