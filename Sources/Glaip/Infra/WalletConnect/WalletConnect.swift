@@ -137,16 +137,14 @@ extension WalletConnect: ClientDelegate {
     }
     
     func client(_ client: Client, didDisconnect session: Session) {
-        let key = sessionKey + (session.walletInfo != nil ? session.walletInfo!.peerMeta.name.lowercased() : "")
+        let key = sessionKey + (session.walletInfo != nil ? session.walletInfo!.peerMeta.name.replacingOccurrences(of: " ", with: "").lowercased() : "")
         print("key: ", key)
         UserDefaults.standard.removeObject(forKey: key)
         var type: WalletType = .MetaMask
-        if let walletInfo = session.walletInfo {
-            if walletInfo.peerMeta.name.lowercased().contains("metamask") {
-                type = .MetaMask
-            } else if walletInfo.peerMeta.name.lowercased().contains("trust") {
-                type = .TrustWallet
-            }
+        if key.contains("metamask") {
+            type = .MetaMask
+        } else if key.contains("trust") {
+            type = .TrustWallet
         }
         delegate.didDisconnect(type: type)
     }
