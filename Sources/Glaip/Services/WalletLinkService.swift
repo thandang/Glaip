@@ -126,7 +126,7 @@ extension WalletLinkService: WalletConnectDelegate {
     }
     
     func didDisconnect(session: Session) {
-        onDidDisconnect?(session: session)
+        onDidDisconnect?(session)
     }
 }
 
