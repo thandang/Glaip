@@ -32,7 +32,7 @@ public final class WalletLinkService: WalletService {
     
     private var walletConnect: WalletConnect!
     var onDidConnect: ((User) -> Void)?
-    var onDidDisconnect: ((Session) -> Void)?
+    var onDidDisconnect: ((WalletType) -> Void)?
     
     public init(title: String, description: String) {
         self.title = title
@@ -125,8 +125,8 @@ extension WalletLinkService: WalletConnectDelegate {
         onDidConnect?(user)
     }
     
-    func didDisconnect(session: Session) {
-        onDidDisconnect?(session)
+    func didDisconnect(type: WalletType) {
+        onDidDisconnect?(type)
     }
 }
 

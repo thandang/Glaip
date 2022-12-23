@@ -11,7 +11,7 @@ import WalletConnectSwift
 protocol WalletConnectDelegate: AnyObject {
     func failedToConnect()
     func didConnect()
-    func didDisconnect(session: Session)
+    func didDisconnect(type: WalletType)
     func didUpdate()
 }
 
@@ -118,7 +118,15 @@ extension WalletConnect: ClientDelegate {
     
     func client(_ client: Client, didDisconnect session: Session) {
         UserDefaults.standard.removeObject(forKey: sessionKey)
-        delegate.didDisconnect(session: session)
+        var type: WalletType = .MetaMask
+        if let walletInfo = session.walletInfo {
+            if walletInfo.peerMeta.name.lowercased().contains("metamask") {
+                type = .MetaMask
+            } else if walletInfo.peerMeta.name.lowercased().contains("trust") {
+                type = .TrustWallet
+            }
+        }
+        delegate.didDisconnect(type: type)
     }
     
     func client(_ client: Client, didUpdate session: Session) {
