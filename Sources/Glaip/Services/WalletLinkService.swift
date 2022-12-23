@@ -59,7 +59,7 @@ public final class WalletLinkService: WalletService {
         let sessions = walletConnect.openSessions()
         if sessions.count > 0 {
             for session  in sessions {
-                if let info = session.walletInfo, type.rawValue.contains(info.peerMeta.name.lowercased()) {
+                if let info = session.walletInfo, type.rawValue.contains(info.peerMeta.name.replacingOccurrences(of: " ", with: "").lowercased()) {
                     do {
             //            guard let session = walletConnect.session else { return }
                         try walletConnect.client.disconnect(from: session)
