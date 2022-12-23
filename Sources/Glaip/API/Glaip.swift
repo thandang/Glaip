@@ -53,13 +53,6 @@ public final class Glaip: ObservableObject {
             switch result {
             case let .success(user):
                 completion(.success(user))
-//                    User(
-//                        wallet: Wallet(
-//                            type: wallet,
-//                            address: walletDetails.address,
-//                            chainId: String(walletDetails.chainId))
-//                    ))
-//                )
             case let .failure(error):
                 completion(.failure(error))
             }

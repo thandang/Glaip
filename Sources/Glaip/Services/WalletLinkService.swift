@@ -96,9 +96,11 @@ public final class WalletLinkService: WalletService {
 // MARK: - WalletConnectDelegate
 extension WalletLinkService: WalletConnectDelegate {
     func didUpdate() {
+        print("did update")
     }
     
     func failedToConnect() {
+        print("did failed to connect")
     }
     
     func didConnect() {
@@ -121,7 +123,6 @@ extension WalletLinkService: WalletConnectDelegate {
                 chainId: String(walletInfo.chainId))
         )
         onDidConnect?(user)
-//        onDidConnect?(WalletDetails(address: walletAddress, chainId: walletInfo.chainId))
     }
     
     func didDisconnect() {

@@ -51,7 +51,6 @@ final class WalletConnect {
         if let oldSessionObject = UserDefaults.standard.object(forKey: sessionKey) as? Data,
            let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
             client = Client(delegate: self, dAppInfo: session.dAppInfo)
-            print("session: ", session.walletInfo?.peerMeta.name)
             try? client.reconnect(to: session)
         }
     }
