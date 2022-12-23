@@ -55,13 +55,21 @@ public final class WalletLinkService: WalletService {
         }
     }
     
-    public func disconnect() {
-        do {
-            guard let session = walletConnect.session else { return }
-            
-            try walletConnect.client.disconnect(from: session)
-        } catch {
-            print("error disconnecting")
+    public func disconnect(type: WalletType) {
+        let sessions = walletConnect.openSessions()
+        if sessions.count > 0 {
+            for session  in sessions {
+                if let info = session.walletInfo, type.rawValue.contains(info.peerMeta.name.lowercased()) {
+                    do {
+            //            guard let session = walletConnect.session else { return }
+                        try walletConnect.client.disconnect(from: session)
+                    } catch {
+                        print("error disconnecting")
+                    }
+
+                    break
+                }
+            }
         }
     }
     

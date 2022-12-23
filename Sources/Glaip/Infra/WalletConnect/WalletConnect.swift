@@ -47,10 +47,29 @@ final class WalletConnect {
         return wcUrl.absoluteString
     }
     
+    //Current open session
+    func openSessions() -> [Session] {
+        let sessions = client.openSessions()
+        print("open sessions: ", sessions)
+        return sessions
+    }
+    
     func reconnectIfNeeded() {
-        if let oldSessionObject = UserDefaults.standard.object(forKey: sessionKey) as? Data,
+        let metamaskKey = sessionKey + "metamask"
+        if let oldSessionObject = UserDefaults.standard.object(forKey: metamaskKey) as? Data,
            let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
-            client = Client(delegate: self, dAppInfo: session.dAppInfo)
+            if client == nil {
+                client = Client(delegate: self, dAppInfo: session.dAppInfo)
+            }
+            try? client.reconnect(to: session)
+        }
+        
+        let trustWalletKey = sessionKey + "trustwallet"
+        if let oldSessionObject = UserDefaults.standard.object(forKey: trustWalletKey) as? Data,
+           let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
+            if client == nil {
+                client = Client(delegate: self, dAppInfo: session.dAppInfo)
+            }
             try? client.reconnect(to: session)
         }
     }
@@ -89,10 +108,11 @@ final class WalletConnect {
     }
     
     private func store(_ session: Session) {
+        let key = sessionKey + (session.walletInfo != nil ? session.walletInfo!.peerMeta.name.lowercased() : "")
         do {
             let sesionData = try JSONEncoder().encode(session)
             let userDefault = UserDefaults.standard
-            userDefault.set(sesionData, forKey: sessionKey)
+            userDefault.set(sesionData, forKey: key)
             userDefault.synchronize()
         } catch {
             print("Could not store session")
@@ -117,7 +137,9 @@ extension WalletConnect: ClientDelegate {
     }
     
     func client(_ client: Client, didDisconnect session: Session) {
-        UserDefaults.standard.removeObject(forKey: sessionKey)
+        let key = sessionKey + (session.walletInfo != nil ? session.walletInfo!.peerMeta.name.lowercased() : "")
+        print("key: ", key)
+        UserDefaults.standard.removeObject(forKey: key)
         var type: WalletType = .MetaMask
         if let walletInfo = session.walletInfo {
             if walletInfo.peerMeta.name.lowercased().contains("metamask") {

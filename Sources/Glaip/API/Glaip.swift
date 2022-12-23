@@ -43,8 +43,8 @@ public final class Glaip: ObservableObject {
         })
     }
     
-    public func logout() {
-        walletConnect.disconnect()
+    public func logout(type: WalletType) {
+        walletConnect.disconnect(type: type)
     }
     
     private func walletLogin(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
