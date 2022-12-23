@@ -108,7 +108,7 @@ final class WalletConnect {
     }
     
     private func store(_ session: Session) {
-        let key = sessionKey + (session.walletInfo != nil ? session.walletInfo!.peerMeta.name.lowercased() : "")
+        let key = sessionKey + (session.walletInfo != nil ? session.walletInfo!.peerMeta.name.replacingCharacters(in: " ", with: "").lowercased() : "")
         do {
             let sesionData = try JSONEncoder().encode(session)
             let userDefault = UserDefaults.standard
