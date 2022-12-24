@@ -43,6 +43,10 @@ public final class Glaip: ObservableObject {
         })
     }
     
+    public func sign(message: String, type: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
+        walletConnect.sign(wallet: type, message: message, completion: completion)
+    }
+    
     public func logout(type: WalletType) {
         walletConnect.disconnect(type: type)
     }
