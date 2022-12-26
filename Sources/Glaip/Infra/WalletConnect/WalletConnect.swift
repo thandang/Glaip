@@ -55,6 +55,13 @@ final class WalletConnect {
     }
     
     func reconnectIfNeeded() {
+        self.reconnectMetamask()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.reconnectTrust()
+        }
+    }
+    
+    private func reconnectMetamask() {
         let metamaskKey = sessionKey + "metamask"
         if let oldSessionObject = UserDefaults.standard.object(forKey: metamaskKey) as? Data,
            let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
@@ -63,7 +70,9 @@ final class WalletConnect {
             }
             try? client.reconnect(to: session)
         }
-        
+    }
+    
+    private func reconnectTrust() {
         let trustWalletKey = sessionKey + "trustwallet"
         if let oldSessionObject = UserDefaults.standard.object(forKey: trustWalletKey) as? Data,
            let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
