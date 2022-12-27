@@ -79,8 +79,10 @@ public final class WalletLinkService: WalletService {
         walletConnect.personalSign(message: message, wallet: wallet, completion: completion)
     }
     
-    private func setWalletConnect() {
-        walletConnect = WalletConnect(delegate: self, config: config)
+    func setWalletConnect() {
+        if walletConnect == nil {
+            walletConnect = WalletConnect(delegate: self, config: config)
+        }
         walletConnect.reconnectIfNeeded()
     }
     

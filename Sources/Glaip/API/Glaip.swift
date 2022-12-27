@@ -31,6 +31,11 @@ public final class Glaip: ObservableObject {
         self.walletConnectLink.onDidDisconnect = onDidDisconnect
     }
     
+    public func validateOpenSessions() {
+//        let openSessions = walletConnectLink.walletConnect.openSessions()
+        walletConnectLink.setWalletConnect()
+    }
+    
     public func loginUser(type: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
         walletLogin(wallet: type, completion: { [weak self] result in
             switch result {
