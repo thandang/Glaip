@@ -74,7 +74,7 @@ public final class WalletLinkService: WalletService {
     }
     
     public func sign(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void) {
-//        openAppToConnect(wallet: wallet, getDeepLink(wallet: wallet), delay: 3)
+        openAppToSign(wallet: wallet, delay: 3)
         walletConnect.personalSign(message: message, wallet: wallet, completion: completion)
     }
     
