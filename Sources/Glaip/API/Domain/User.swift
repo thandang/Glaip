@@ -37,9 +37,14 @@ public struct AppConfig {
     init(config json: [String: Any]) {
         if let cl = json["clientURL"] as? String {
             self.clientURL = URL(string: cl)!
+        } else {
+            self.clientURL = URL(string: "https://safe.gnosis.io")!
         }
+        
         if let br = json["bridgeURL"] as? String {
             self.bridgeURL = URL(string: br)!
+        } else {
+            self.bridgeURL = URL(string: "https://safe-walletconnect.safe.global/")!
         }
         var icons = [URL]()
         if let iconsArr = json["iconURLs"] as? Array<String>, icons.count > 0 {
