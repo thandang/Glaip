@@ -24,10 +24,10 @@ public final class Glaip: ObservableObject {
         self.title = title
         self.description = description
         self.supportedWallets = supportedWallets
-        self.walletConnect = WalletLinkService(title: title, description: description)
+        self.walletConnect = WalletLinkService(title: title, description: description, config: config)
         self.walletConnect.onDidConnect = onConnect
         self.walletConnect.onDidDisconnect = onDidDisconnect
-        self.config = config
+//        self.config = config
     }
     
     public func loginUser(type: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
@@ -54,9 +54,8 @@ public final class Glaip: ObservableObject {
     }
     
     private func walletLogin(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
-        let service = WalletLinkService(title: title, description: description)
-        service.connect(wallet: wallet, completion: { result in
-            
+//        let service = WalletLinkService(title: title, description: description, config: conf)
+        walletConnect.connect(wallet: wallet, completion: { result in
             switch result {
             case let .success(user):
                 completion(.success(user))

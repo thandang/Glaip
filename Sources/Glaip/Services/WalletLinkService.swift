@@ -31,12 +31,14 @@ public final class WalletLinkService: WalletService {
     private let description: String
     
     private var walletConnect: WalletConnect!
+    private var config: AppConfig
     var onDidConnect: ((User) -> Void)?
     var onDidDisconnect: ((WalletType) -> Void)?
     
-    public init(title: String, description: String) {
+    public init(title: String, description: String, config: AppConfig) {
         self.title = title
         self.description = description
+        self.config = config
         
         setWalletConnect()
     }
@@ -78,7 +80,7 @@ public final class WalletLinkService: WalletService {
     }
     
     private func setWalletConnect() {
-        walletConnect = WalletConnect(delegate: self)
+        walletConnect = WalletConnect(delegate: self, config: config)
         walletConnect.reconnectIfNeeded()
     }
     
