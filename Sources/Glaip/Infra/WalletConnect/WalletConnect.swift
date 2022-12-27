@@ -62,7 +62,9 @@ final class WalletConnect {
     //Current open session
     func openSessions() -> [Session] {
         let sessions = client.openSessions()
-        print("open sessions: ", sessions)
+        #if DEBUG
+            print("open sessions: ", sessions)
+        #endif
         return sessions
     }
     
@@ -99,11 +101,12 @@ final class WalletConnect {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             let sessions = self.openSessions()
             if sessions.count > 0 {
-                for session  in sessions {
-                    if let info = session.walletInfo, wallet.rawValue.contains(info.peerMeta.name.replacingOccurrences(of: " ", with: "").lowercased()), let account = info.accounts.first {
+                for ss  in sessions {
+                    if let info = ss.walletInfo, wallet.rawValue.contains(info.peerMeta.name.replacingOccurrences(of: " ", with: "").lowercased()), let account = info.accounts.first {
+                        print("session url: ", ss.url)
                         do {
                             try self.client.personal_sign(
-                                url: self.session.url,
+                                url: ss.url,
                                 message: message,
                                 account: account
                             ) { response in
