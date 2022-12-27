@@ -91,8 +91,16 @@ public final class WalletLinkService: WalletService {
         }
     }
     
-    private func getDeepLink(wallet: WalletType) -> String {
-        let connectionUrl = walletConnect.connect(title: title, description: description)
+    private func openAppToSign(wallet: WalletType, delay: CGFloat = 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            if let url = URL(string: self.getDeepLink(wallet: wallet, isConnect: false)), UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    
+    private func getDeepLink(wallet: WalletType, isConnect: Bool = true) -> String {
+        let connectionUrl = isConnect ? walletConnect.connect(title: title, description: description) : walletConnect.openWallet()
         let encodeURL = connectionUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
         let end = encodeURL.replacingOccurrences(of: "=", with: "%3D").replacingOccurrences(of: "&", with: "%26")
         
