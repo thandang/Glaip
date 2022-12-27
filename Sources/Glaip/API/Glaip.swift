@@ -10,6 +10,7 @@ import WalletConnectSwift
 
 public final class Glaip: ObservableObject {
     private let walletConnect: WalletLinkService
+    private let config: AppConfig
      
     public let title: String
     public let description: String
@@ -19,13 +20,14 @@ public final class Glaip: ObservableObject {
     
     @Published public var userState: UserState = .unregistered
     
-    public init(title: String, description: String, supportedWallets: [WalletType], onConnect: ((User) -> Void)?, onDidDisconnect: ((WalletType) -> Void)?) {
+    public init(title: String, description: String, supportedWallets: [WalletType], config: AppConfig, onConnect: ((User) -> Void)?, onDidDisconnect: ((WalletType) -> Void)?) {
         self.title = title
         self.description = description
         self.supportedWallets = supportedWallets
         self.walletConnect = WalletLinkService(title: title, description: description)
         self.walletConnect.onDidConnect = onConnect
         self.walletConnect.onDidDisconnect = onDidDisconnect
+        self.config = config
     }
     
     public func loginUser(type: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
@@ -63,4 +65,10 @@ public final class Glaip: ObservableObject {
             }
         })
     }
+}
+
+
+public struct AppConfig {
+    let clientURL: URL
+    let bridgeURL: URL
 }

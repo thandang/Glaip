@@ -12,4 +12,3 @@ public struct Wallet: Equatable {
   public let address: String
   public let chainId: String
 }
-

@@ -22,24 +22,26 @@ final class WalletConnect {
     
     private let sessionKey = "sessionKey"
     private var delegate: WalletConnectDelegate
+    private var config: AppConfig
     
-    init(delegate: WalletConnectDelegate) {
+    init(delegate: WalletConnectDelegate, config: AppConfig) {
         self.delegate = delegate
+        self.config = config
     }
     
     func connect(title: String, description: String, icons: [URL] = []) -> String {
         // gnosis wc bridge: https://safe-walletconnect.gnosis.io/
         // test bridge with latest protocol version: https://bridge.walletconnect.org
-        let bridgeURL = URL(string: "https://safe-walletconnect.safe.global/")!
-        let clientURL = URL(string: "https://safe.gnosis.io")!
+//        let bridgeURL = URL(string: "https://safe-walletconnect.safe.global/")!
+//        let clientURL = URL(string: "https://safe.gnosis.io")!
         
         let wcUrl =  WCURL(topic: UUID().uuidString,
-                           bridgeURL: bridgeURL,
+                           bridgeURL: config.bridgeURL,
                            key: try! randomKey())
         let clientMeta = Session.ClientMeta(name: title,
                                             description: description,
                                             icons: icons,
-                                            url: clientURL)
+                                            url: config.clientURL)
         let dAppInfo = Session.DAppInfo(peerId: UUID().uuidString, peerMeta: clientMeta)
         client = Client(delegate: self, dAppInfo: dAppInfo)
         
@@ -50,11 +52,11 @@ final class WalletConnect {
     func openWallet() -> String {
         // gnosis wc bridge: https://safe-walletconnect.gnosis.io/
         // test bridge with latest protocol version: https://bridge.walletconnect.org
-        let bridgeURL = URL(string: "https://safe-walletconnect.safe.global/")!
-        let clientURL = URL(string: "https://safe.gnosis.io")!
+//        let bridgeURL = URL(string: "https://safe-walletconnect.safe.global/")!
+//        let clientURL = URL(string: "https://safe.gnosis.io")!
         
         let wcUrl =  WCURL(topic: UUID().uuidString,
-                           bridgeURL: bridgeURL,
+                           bridgeURL: config.bridgeURL,
                            key: try! randomKey())
         return wcUrl.absoluteString
     }
