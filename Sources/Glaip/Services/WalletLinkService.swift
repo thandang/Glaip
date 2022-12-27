@@ -11,7 +11,7 @@ import WalletConnectSwift
 import SwiftUI
 
 public protocol WalletService {
-    func connect(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void)
+    func connect(wallet: WalletType, completion: @escaping (Result<[User], Error>) -> Void)
     func sign(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void)
 }
 

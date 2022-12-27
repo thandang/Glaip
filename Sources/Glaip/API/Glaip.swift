@@ -36,15 +36,15 @@ public final class Glaip: ObservableObject {
         walletConnectLink.setWalletConnect()
     }
     
-    public func loginUser(type: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
+    public func loginUser(type: WalletType, completion: @escaping (Result<[User], Error>) -> Void) {
         walletLogin(wallet: type, completion: { [weak self] result in
             switch result {
-            case let .success(user):
+            case let .success(users):
                 DispatchQueue.main.async {
-                    self?.userState = .loggedIn(user)
+//                    self?.userState = .loggedIn(user)
                 }
                 self?.currentWallet = type
-                completion(.success(user))
+                completion(.success(users))
             case let .failure(error):
                 completion(.failure(error))
             }
@@ -59,11 +59,11 @@ public final class Glaip: ObservableObject {
         walletConnectLink.disconnect(type: type)
     }
     
-    private func walletLogin(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
+    private func walletLogin(wallet: WalletType, completion: @escaping (Result<[User], Error>) -> Void) {
         walletConnectLink.connect(wallet: wallet, completion: { result in
             switch result {
-            case let .success(user):
-                completion(.success(user))
+            case let .success(users):
+                completion(.success(users))
             case let .failure(error):
                 completion(.failure(error))
             }
