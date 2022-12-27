@@ -10,7 +10,7 @@ import WalletConnectSwift
 
 public final class Glaip: ObservableObject {
     
-    private let walletConnect: WalletLinkService
+    private let walletConnectLink: WalletLinkService
      
     public let title: String
     public let description: String
@@ -26,9 +26,9 @@ public final class Glaip: ObservableObject {
         self.supportedWallets = supportedWallets
         
         let config = AppConfig(config: configJson)
-        self.walletConnect = WalletLinkService(title: title, description: description, config: config)
-        self.walletConnect.onDidConnect = onConnect
-        self.walletConnect.onDidDisconnect = onDidDisconnect
+        self.walletConnectLink = WalletLinkService(title: title, description: description, config: config)
+        self.walletConnectLink.onDidConnect = onConnect
+        self.walletConnectLink.onDidDisconnect = onDidDisconnect
     }
     
     public func loginUser(type: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
@@ -47,16 +47,15 @@ public final class Glaip: ObservableObject {
     }
     
     public func sign(message: String, type: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
-        walletConnect.sign(wallet: type, message: message, completion: completion)
+        walletConnectLink.sign(wallet: type, message: message, completion: completion)
     }
     
     public func logout(type: WalletType) {
-        walletConnect.disconnect(type: type)
+        walletConnectLink.disconnect(type: type)
     }
     
     private func walletLogin(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
-//        let service = WalletLinkService(title: title, description: description, config: conf)
-        walletConnect.connect(wallet: wallet, completion: { result in
+        walletConnectLink.connect(wallet: wallet, completion: { result in
             switch result {
             case let .success(user):
                 completion(.success(user))
