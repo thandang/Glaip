@@ -32,7 +32,7 @@ public final class WalletLinkService: WalletService {
     
     private var walletConnect: WalletConnect!
     private var config: AppConfig
-    var onDidConnect: ((User) -> Void)?
+    var onDidConnect: (([User]) -> Void)?
     var onDidDisconnect: ((WalletType) -> Void)?
     
     public init(title: String, description: String, config: AppConfig) {
@@ -43,7 +43,7 @@ public final class WalletLinkService: WalletService {
         setWalletConnect()
     }
     
-    public func connect(wallet: WalletType, completion: @escaping (Result<User, Error>) -> Void) {
+    public func connect(wallet: WalletType, completion: @escaping (Result<[User], Error>) -> Void) {
         openAppToConnect(wallet: wallet, getDeepLink(wallet: wallet), delay: 1)
         
         // Temp fix to avoid threading issue with async await
@@ -122,25 +122,28 @@ extension WalletLinkService: WalletConnectDelegate {
     }
     
     func didConnect() {
-        guard
-            let session = walletConnect.session,
-            let walletInfo = session.walletInfo,
-            let walletAddress = walletInfo.accounts.first
-        else { return }
-        
-        var type: WalletType = .MetaMask
-        if let wallet = session.walletInfo, wallet.peerMeta.name.lowercased().contains("metamask") {
-            type = .MetaMask
-        } else if let wallet = session.walletInfo, wallet.peerMeta.name.lowercased().contains("trust") {
-            type = .TrustWallet
+        let sessions = walletConnect.openSessions()
+        var users = [User]()
+        if sessions.count > 0 {
+            for session in sessions {
+                var type: WalletType = .MetaMask
+                if let info = session.walletInfo, let address = info.accounts.first {
+                    if info.peerMeta.name.lowercased().contains("metamask") {
+                        type = .MetaMask
+                    } else if info.peerMeta.name.lowercased().contains("trust") {
+                        type = .TrustWallet
+                    }
+                    let user = User(
+                        wallet: Wallet(
+                            type: type,
+                            address: address,
+                            chainId: String(info.chainId))
+                    )
+                    users.append(user)
+                }
+            }
         }
-        let user = User(
-            wallet: Wallet(
-                type: type,
-                address: walletAddress,
-                chainId: String(walletInfo.chainId))
-        )
-        onDidConnect?(user)
+        onDidConnect?(users)
     }
     
     func didDisconnect(type: WalletType) {

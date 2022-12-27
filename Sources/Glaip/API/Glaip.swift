@@ -20,7 +20,7 @@ public final class Glaip: ObservableObject {
     
     @Published public var userState: UserState = .unregistered
     
-    public init(title: String, description: String, supportedWallets: [WalletType], configJson: [String: Any], onConnect: ((User) -> Void)?, onDidDisconnect: ((WalletType) -> Void)?) {
+    public init(title: String, description: String, supportedWallets: [WalletType], configJson: [String: Any], onConnect: (([User]) -> Void)?, onDidDisconnect: ((WalletType) -> Void)?) {
         self.title = title
         self.description = description
         self.supportedWallets = supportedWallets
