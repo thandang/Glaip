@@ -96,7 +96,7 @@ final class WalletConnect {
     }
     
     func personalSign(message: String, wallet: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             let sessions = self.openSessions()
             if sessions.count > 0 {
                 for session  in sessions {
