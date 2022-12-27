@@ -10,7 +10,7 @@ import WalletConnectSwift
 
 public final class Glaip: ObservableObject {
     private let walletConnect: WalletLinkService
-    private let config: AppConfig
+//    private let config: AppConfig
      
     public let title: String
     public let description: String
