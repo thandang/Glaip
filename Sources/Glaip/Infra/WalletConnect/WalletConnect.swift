@@ -71,15 +71,15 @@ final class WalletConnect {
         let metamaskKey = sessionKey + "metamask"
         if let oldSessionObject = UserDefaults.standard.object(forKey: metamaskKey) as? Data,
            let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
+            if client == nil {
+                client = Client(delegate: self, dAppInfo: session.dAppInfo)
+            }
             let openSessions = openSessions()
             if openSessions.contains(where: { ss in
                 return ss.walletInfo?.accounts.first == session.walletInfo?.accounts.first
             }) {
                 delegate.didConnect()
             } else {
-                if client == nil {
-                    client = Client(delegate: self, dAppInfo: session.dAppInfo)
-                }
                 try? client.reconnect(to: session)
             }
         }
@@ -89,16 +89,16 @@ final class WalletConnect {
         let trustWalletKey = sessionKey + "trustwallet"
         if let oldSessionObject = UserDefaults.standard.object(forKey: trustWalletKey) as? Data,
            let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
-            
+            if client == nil {
+                client = Client(delegate: self, dAppInfo: session.dAppInfo)
+            }
             let openSessions = openSessions()
             if openSessions.contains(where: { ss in
                 return ss.walletInfo?.accounts.first == session.walletInfo?.accounts.first
             }) {
                 delegate.didConnect()
             } else {
-                if client == nil {
-                    client = Client(delegate: self, dAppInfo: session.dAppInfo)
-                }
+               
                 try? client.reconnect(to: session)
             }
         }
