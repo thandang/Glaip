@@ -41,14 +41,15 @@ public struct AppConfig {
         if let br = json["bridgeURL"] as? String {
             self.bridgeURL = URL(string: br)!
         }
-        self.iconURLs = [URL]()
-        if let icons = json["iconURLs"] as? Array<String>, icons.count > 0 {
-            for item in icons {
+        var icons = [URL]()
+        if let iconsArr = json["iconURLs"] as? Array<String>, icons.count > 0 {
+            for item in iconsArr {
                 if let url = URL(string: item) {
-                    self.iconURLs.append(url)
+                    icons.append(url)
                 }
             }
         }
+        self.iconURLs = icons
     }
 }
 
