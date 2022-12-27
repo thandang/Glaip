@@ -83,21 +83,27 @@ final class WalletConnect {
         }
     }
     
-    func sign(message: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func personalSign(message: String, wallet: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            guard let accounts = self.session?.walletInfo?.accounts, let wallet = accounts.first else { return }
-            
-            do {
-                try self.client.personal_sign(
-                    url: self.session.url,
-                    message: message,
-                    account: wallet
-                ) { response in
-                    guard let responseHash = try? response.result(as: String.self) else { return }
-                    completion(.success(responseHash))
+            let sessions = self.openSessions()
+            if sessions.count > 0 {
+                for session  in sessions {
+                    if let info = session.walletInfo, wallet.rawValue.contains(info.peerMeta.name.replacingOccurrences(of: " ", with: "").lowercased()), let account = info.accounts.first {
+                        do {
+                            try self.client.personal_sign(
+                                url: self.session.url,
+                                message: message,
+                                account: account
+                            ) { response in
+                                guard let responseHash = try? response.result(as: String.self) else { return }
+                                completion(.success(responseHash))
+                            }
+                        } catch {
+                            completion(.failure(error))
+                        }
+                        break
+                    }
                 }
-            } catch {
-                completion(.failure(error))
             }
         }
     }
