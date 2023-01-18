@@ -51,8 +51,12 @@ public final class Glaip: ObservableObject {
         })
     }
     
-    public func sign(message: String, type: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
-        walletConnectLink.sign(wallet: type, message: message, completion: completion)
+    public func signPersonal(message: String, type: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
+        walletConnectLink.signPersonal(wallet: type, message: message, completion: completion)
+    }
+    
+    public func signEth(message: String, type: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
+        walletConnectLink.signEth(wallet: type, message: message, completion: completion)
     }
     
     public func logout(type: WalletType) {

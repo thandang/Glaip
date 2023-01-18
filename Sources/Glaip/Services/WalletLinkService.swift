@@ -12,7 +12,8 @@ import SwiftUI
 
 public protocol WalletService {
     func connect(wallet: WalletType, completion: @escaping (Result<[User], Error>) -> Void)
-    func sign(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void)
+    func signPersonal(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void)
+    func signEth(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void)
 }
 
 public struct WalletDetails {
@@ -26,7 +27,6 @@ public struct WalletDetails {
 }
 
 public final class WalletLinkService: WalletService {
-    
     private let title: String
     private let description: String
     
@@ -74,9 +74,14 @@ public final class WalletLinkService: WalletService {
         }
     }
     
-    public func sign(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void) {
+    public func signPersonal(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void) {
         openAppToSign(wallet: wallet, delay: 3)
         walletConnect.personalSign(message: message, wallet: wallet, completion: completion)
+    }
+    
+    public func signEth(wallet: WalletType, message: String, completion: @escaping (Result<String, Error>) -> Void) {
+        openAppToSign(wallet: wallet, delay: 3)
+        walletConnect.ethSign(message: message, wallet: wallet, completion: completion)
     }
     
     func setWalletConnect() {

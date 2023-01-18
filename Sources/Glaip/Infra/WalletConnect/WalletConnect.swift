@@ -130,6 +130,31 @@ final class WalletConnect {
         }
     }
     
+    func ethSign(message: String, wallet: WalletType, completion: @escaping (Result<String, Error>) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            let sessions = self.openSessions()
+            if sessions.count > 0 {
+                for ss  in sessions {
+                    if let info = ss.walletInfo, wallet.rawValue.contains(info.peerMeta.name.replacingOccurrences(of: " ", with: "").lowercased()), let account = info.accounts.first {
+                        print("session url: ", ss.url)
+                        do {
+                            try self.client.eth_sign(url: ss.url,
+                                                     account: account,
+                                                     message: message,
+                                                     completion: { response in
+                                guard let responseHash = try? response.result(as: String.self) else { return }
+                                completion(.success(responseHash))
+                            })
+                        } catch {
+                            completion(.failure(error))
+                        }
+                        break
+                    }
+                }
+            }
+        }
+    }
+    
     // https://developer.apple.com/documentation/security/1399291-secrandomcopybytes
     private func randomKey() throws -> String {
         var bytes = [Int8](repeating: 0, count: 32)
